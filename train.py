@@ -21,7 +21,9 @@ import torch
 import transformers
 import utils
 from torch.utils.data import Dataset
-from transformers import Trainer
+#from transformers import Trainer
+from mezo import OurTrainer as Trainer
+from mezo_args import OurArguments 
 
 IGNORE_INDEX = -100
 DEFAULT_PAD_TOKEN = "[PAD]"
@@ -53,7 +55,7 @@ class DataArguments:
 
 
 @dataclass
-class TrainingArguments(transformers.TrainingArguments):
+class TrainingArguments(OurArguments):
     cache_dir: Optional[str] = field(default=None)
     optim: str = field(default="adamw_torch")
     model_max_length: int = field(
@@ -183,9 +185,15 @@ def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
     model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
+    if training_args.bf16:
+        torch_dtype=torch.bfloat16
+    else:
+        torch_dtype=None
+
     model = transformers.AutoModelForCausalLM.from_pretrained(
         model_args.model_name_or_path,
         cache_dir=training_args.cache_dir,
+        torch_dtype=torch_dtype
     )
 
     tokenizer = transformers.AutoTokenizer.from_pretrained(
