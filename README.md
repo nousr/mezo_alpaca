@@ -1,3 +1,8 @@
+# MeZO optimizer + LLaMA
+
+Train with significantly reduced VRAM (requires about as much as inference).
+
+---
 
 <p align="center" width="100%">
 <img src="assets/logo.png" alt="Stanford-Alpaca" style="width: 50%; min-width: 300px; display: block; margin: auto;">
